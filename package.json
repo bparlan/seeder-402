@@ -1,0 +1,14 @@
+{
+  "name": "seeder-402",
+  "version": "0.1.0",
+  "private": true,
+  "description": "x402 Hypercore/Hyperdrive seeder service",
+  "main": "api.js",
+  "scripts": {
+    "start": "node api.js",
+    "peer": "node peer.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

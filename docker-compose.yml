@@ -1,0 +1,31 @@
+services:
+  api:
+    build: .
+    command: node api.js
+    ports:
+      - "3000:3000"
+    environment:
+      - LEASE_SECRET
+      - PAY_TO
+      - FACILITATOR_URL
+      - NETWORK=${NETWORK:-eip155:84532}
+      - DATABASE_URL=/data/leases.db
+      - STORE=/data/corestore
+      - CONTROL_PORT=7001
+      - PEER_URL=http://peer:7001
+    volumes:
+      - /var/lib/seeder-402/leases.db:/data/leases.db
+      - /var/lib/seeder-402/corestore:/data/corestore
+    depends_on:
+      - peer
+    restart: unless-stopped
+
+  peer:
+    build: .
+    command: node peer.js
+    environment:
+      - STORE=/data/corestore
+      - CONTROL_PORT=7001
+    volumes:
+      - /var/lib/seeder-402/corestore:/data/corestore
+    restart: unless-stopped
