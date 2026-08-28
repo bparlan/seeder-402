@@ -1,4 +1,5 @@
 const net = require('net');
+const fs = require('fs');
 const CONTROL_SOCKET = process.env.CONTROL_SOCKET || '/data/ctrl/peer.sock';
 
 const server = net.createServer((socket) => {
@@ -6,6 +7,10 @@ const server = net.createServer((socket) => {
   socket.on('error', (err) => console.error('peer control socket error:', err.message));
   socket.on('end', () => console.log('peer control socket: client disconnected'));
 });
+
+if (fs.existsSync(CONTROL_SOCKET)) {
+  fs.unlinkSync(CONTROL_SOCKET);
+}
 
 server.on('error', (err) => {
   console.error('peer control socket server error:', err.message);
