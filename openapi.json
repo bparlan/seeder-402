@@ -1,0 +1,142 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "seeder-402",
+    "description": "x402 Hypercore/Hyperdrive seeder service",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://seed.bparlan.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Returns service status",
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        }
+      }
+    },
+    "/v1/status": {
+      "get": {
+        "summary": "Check key availability",
+        "description": "Returns whether key is reachable with peer info",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "z32 or hex discovery/public key"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status check result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "live": {
+                      "type": "boolean"
+                    },
+                    "peers": {
+                      "type": "integer"
+                    },
+                    "bytes": {
+                      "type": "integer"
+                    },
+                    "lastSeen": {
+                      "type": "integer",
+                      "description": "unix seconds"
+                    },
+                    "until": {
+                      "type": "integer",
+                      "description": "unix seconds"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required"
+          }
+        }
+      }
+    },
+    "/v1/seed": {
+      "post": {
+        "summary": "Seed a Hypercore/Hyperdrive key",
+        "description": "Add a new discovery key to the swarm",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["key"],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "description": "z32 or hex discovery/public key"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["hypercore", "hyperdrive"],
+                    "default": "hyperdrive"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Seed successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "lease": {
+                      "type": "string"
+                    },
+                    "key": {
+                      "type": "string"
+                    },
+                    "until": {
+                      "type": "integer"
+                    },
+                    "peer": {
+                      "type": "string"
+                    },
+                    "job": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required"
+          }
+        }
+      }
+    }
+  }
+}

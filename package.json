@@ -9,6 +9,8 @@
     "peer": "node peer.js"
   },
   "dependencies": {
-    "express": "^4.21.0"
+    "express": "^4.21.0",
+    "x402": "^1.0.0",
+    "x402-fetch": "^1.0.0"
   }
 }

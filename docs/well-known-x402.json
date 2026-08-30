@@ -1,0 +1,133 @@
+{
+  "version": "1.0",
+  "payment_systems": {
+    "eip155:84532": {
+      "name": "Base Sepolia",
+      "currency": "USDC",
+      "decimals": 6,
+      "symbol": "USDC"
+    }
+  },
+  "endpoints": [
+    {
+      "path": "/v1/seed",
+      "method": "POST",
+      "price": {
+        "amount": "0.10",
+        "currency": "USD"
+      },
+      "schema": {
+        "input": {
+          "type": "object",
+          "required": ["key"],
+          "properties": {
+            "key": {
+              "type": "string",
+              "description": "z32 or hex discovery/public key"
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["hypercore", "hyperdrive"],
+              "default": "hyperdrive"
+            }
+          }
+        },
+        "output": {
+          "type": "object",
+          "required": ["leaseId", "until", "peers"],
+          "properties": {
+            "leaseId": { "type": "string" },
+            "until": { "type": "integer" },
+            "peers": { "type": "integer" },
+            "punch": { "type": "boolean" }
+          }
+        }
+      },
+      "description": "Keep this Hypercore/Hyperdrive discovery key reachable for 24 hours → {leaseId, until, peers} · $0.10 · scarce = disk + process + NAT"
+    },
+    {
+      "path": "/v1/pin",
+      "method": "POST",
+      "price": {
+        "amount": "0.20",
+        "currency": "USD"
+      },
+      "schema": {
+        "input": {
+          "type": "object",
+          "required": ["key", "until"],
+          "properties": {
+            "key": { "type": "string" },
+            "until": { "type": "integer" }
+          }
+        },
+        "output": {
+          "type": "object",
+          "required": ["leaseId", "until"],
+          "properties": {
+            "leaseId": { "type": "string" },
+            "until": { "type": "integer" }
+          }
+        }
+      },
+      "description": "Pin this drive key until this Unix time; return a lease token → {leaseId, until, peers} · $0.20 · scarce = disk + process + NAT"
+    },
+    {
+      "path": "/v1/house",
+      "method": "POST",
+      "price": {
+        "amount": "0.50",
+        "currency": "USD"
+      },
+      "schema": {
+        "input": {
+          "type": "object",
+          "required": ["key"],
+          "properties": {
+            "key": { "type": "string" }
+          }
+        },
+        "output": {
+          "type": "object",
+          "required": ["leaseId", "pearKey", "fetchUrl", "until", "bytes"],
+          "properties": {
+            "leaseId": { "type": "string" },
+            "pearKey": { "type": "string" },
+            "fetchUrl": { "type": "string" },
+            "until": { "type": "integer" },
+            "bytes": { "type": "integer" }
+          }
+        }
+      },
+      "description": "Host this ≤50MB bundle for 7 days; give me a fetch URL + pear key → {leaseId, pearKey, fetchUrl, until, bytes} · $0.50 · scarce = disk + process + NAT"
+    },
+    {
+      "path": "/v1/status",
+      "method": "GET",
+      "price": {
+        "amount": "0.01",
+        "currency": "USD"
+      },
+      "schema": {
+        "input": {
+          "type": "object",
+          "required": ["key"],
+          "properties": {
+            "key": { "type": "string" }
+          }
+        },
+        "output": {
+          "type": "object",
+          "required": ["live", "peers", "bytes", "lastSeen"],
+          "properties": {
+            "live": { "type": "boolean" },
+            "peers": { "type": "integer" },
+            "bytes": { "type": "integer" },
+            "lastSeen": { "type": "integer" }
+          }
+        }
+      },
+      "description": "Prove this key is still live: peers, bytes, last seen → {live, peers, bytes, lastSeen} · $0.01 · scarce = disk + process + NAT"
+    }
+  ]
+}
